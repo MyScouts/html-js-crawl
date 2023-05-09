@@ -1,11 +1,13 @@
+// importScripts("https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/shim.min.js");
+// importScripts("https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js");
 
 $(document).ready(function () {
     $('#startCrawlMercedes').click(async function () {
-        // enable loading
         const loadingElm = $(this).find('.loading');
-        $(this).attr('disable', true);
+        const isLoading = !loadingElm.prop('hidden');
+        if (isLoading) return;
+        // enable loading
         loadingElm.attr('hidden', false)
-
         // process crawl data
         const stores = await getListStore();
         const resultArr = [];
@@ -40,17 +42,17 @@ $(document).ready(function () {
             }
 
             const resultObj = {
-                name: storeName,
-                address: storeAddress,
-                phone: storePhone,
-                email: storeEmail,
-                website: storeWebsite,
-                saleInfo: saleInfo,
-                partInfo: partInfo,
+                'Name': storeName,
+                'Address': storeAddress,
+                'Phone': storePhone,
+                'Email': storeEmail,
+                'Website': storeWebsite,
+                'Neufahrzeugverkauf': saleInfo,
+                'Teile': partInfo,
             }
             resultArr.push(resultObj);
         }
-        console.log("🚀 ~ file: main.js:51 ~ resultArr:", resultArr)
+        makeExportAndDownload(resultArr, "mercedes-benz.de.xlsx");
         // hidden loading
         $(this).attr('disable', false);
         loadingElm.attr('hidden', true)

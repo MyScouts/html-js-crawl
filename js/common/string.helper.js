@@ -11,3 +11,5 @@ const mappingBusinessTime = (inputTime) => {
     }
     return resultStr;
 }
+
+const removeAllSpace = (value) => value.replace(/\s/g, '');

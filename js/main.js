@@ -1,60 +1,66 @@
-// importScripts("https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/shim.min.js");
-// importScripts("https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js");
-
 $(document).ready(function () {
     $('#startCrawlMercedes').click(async function () {
-        const loadingElm = $(this).find('.loading');
-        const isLoading = !loadingElm.prop('hidden');
-        if (isLoading) return;
-        // enable loading
-        loadingElm.attr('hidden', false)
-        // process crawl data
-        const stores = await getListStore();
-        const resultArr = [];
-
-        const storeLength = stores.length;
-        for (let i = 0; i < storeLength; i++) {
-            const store = stores[i];
-            const storeInfo = await getStoreInfoById(store.baseInfo.externalId);
-            if (!storeInfo) continue;
-            const storeName = storeInfo.baseInfo.name1;
-            const storeAddress = `${storeInfo.address.line1},${storeInfo.address.city}`;
-            const storePhone = storeInfo.contact.phone;
-            const storeEmail = storeInfo.contact.email;
-            const storeWebsite = storeInfo.contact.website;
-
-            // Get sale infos
-            let saleInfo = '';
-            const foundSales = storeInfo.functions.filter((e) => e.activityCode == 'SALES');
-            for (const sale of foundSales) {
-                const saleEmail = sale.contact.email || '';
-                const saleTime = mappingBusinessTime(sale.openingHours);
-                saleInfo += `Email: ${saleEmail} \n Time: ${saleTime}. \n`;
+        const element = this;
+        checkAndChangeLoadingStatus(element, async () => {
+            try {
+                const data = await processCrawlMercedes();
+                makeExportAndDownload(data, "mercedes-benz.de.xlsx");
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                })
             }
+            disableLoading(element);
+        })
+    })
 
-            // Get part info
-            let partInfo = '';
-            const foundPart = storeInfo.functions.find((item) => item.activityCode == 'PARTS');
-            if (foundPart) {
-                const partEmail = foundPart.contact.email;
-                const partTime = mappingBusinessTime(foundPart.openingHours);
-                partInfo += `Email: ${partEmail} \n Time: ${partTime}. \n`;
+    $('#startCrawlOpel').click(async function () {
+        const element = this;
+        checkAndChangeLoadingStatus(element, async () => {
+            try {
+                const data = await processCrawlOpel()
+                makeExportAndDownload(data, "opels.xlsx");
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    footer: '<a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">Click here fix your issue?</a>'
+                })
             }
+            disableLoading(element);
+        })
 
-            const resultObj = {
-                'Name': storeName,
-                'Address': storeAddress,
-                'Phone': storePhone,
-                'Email': storeEmail,
-                'Website': storeWebsite,
-                'Neufahrzeugverkauf': saleInfo,
-                'Teile': partInfo,
+    });
+
+    $('#startVolkswagenCrawl').click(async function () {
+        const element = this;
+        checkAndChangeLoadingStatus(element, async () => {
+            try {
+                const data = await processCrawlVolkswagen()
+                makeExportAndDownload(data, "Volkswagen.xlsx");
+            } catch (error) {
+                console.log("🚀 ~ file: main.js:43 ~ checkAndChangeLoadingStatus ~ error:", error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                })
             }
-            resultArr.push(resultObj);
-        }
-        makeExportAndDownload(resultArr, "mercedes-benz.de.xlsx");
-        // hidden loading
-        $(this).attr('disable', false);
-        loadingElm.attr('hidden', true)
+            disableLoading(element);
+        })
     });
 });
+
+const checkAndChangeLoadingStatus = (element, callback) => {
+    const loadingElm = $(element).find('.loading');
+    const isLoading = !loadingElm.prop('hidden');
+    if (isLoading) return;
+    loadingElm.attr('hidden', false)
+    callback();
+}
+
+const disableLoading = (element) => {
+    const loadingElm = $(element).find('.loading');
+    $(element).attr('disable', false);
+    loadingElm.attr('hidden', true)
+}

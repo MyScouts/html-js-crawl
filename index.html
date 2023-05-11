@@ -13,10 +13,13 @@
         integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="./js/common/file.helper.js"></script>
     <script src="./js/common/string.helper.js"></script>
     <script src="./js/services/mercedes.service.js"></script>
+    <script src="./js/services/opel.service.js"></script>
+    <script src="./js/services/volkswagen.service.js"></script>
     <script src="./js/main.js"></script>
 </head>
 
@@ -34,8 +37,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
-                    type="button" role="tab" aria-controls="pills-contact"
-                    aria-selected="false">prod-ds.dcc.feature-app.io</button>
+                    type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Volkswagen</button>
             </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
@@ -52,14 +54,23 @@
             </div>
             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
                 tabindex="0">
-                ...
+                <button type="button" class="btn btn-warning btn-sm d-flex gap-2 align-items-center"
+                    id="startCrawlOpel">
+                    Get data
+                    <div class="spinner-border text-light spinner-border-sm loading" role="status" hidden>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
             </div>
             <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab"
                 tabindex="0">
-                ...
-            </div>
-            <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab"
-                tabindex="0">...
+                <button type="button" class="btn btn-warning btn-sm d-flex gap-2 align-items-center"
+                    id="startVolkswagenCrawl">
+                    Get data
+                    <div class="spinner-border text-light spinner-border-sm loading" role="status" hidden>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
             </div>
         </div>
     </div>
